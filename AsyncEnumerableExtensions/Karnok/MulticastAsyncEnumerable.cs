@@ -2,12 +2,13 @@
 // Licensed under the Apache 2.0 License.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AsyncEnumerableExtensions.Karnok.impl;
 
-namespace System.Interactive.Async.Karnok
+namespace AsyncEnumerableExtensions.Karnok
 {
     /// <summary>
     /// Delivers items or terminal events to multiple

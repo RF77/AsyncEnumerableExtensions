@@ -3,10 +3,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Interactive.Async.Karnok;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using AsyncEnumerableExtensions.Karnok;
 using AsyncEnumerableExtensions.Karnok.impl;
 using Timer = AsyncEnumerableExtensions.Karnok.impl.Timer;
 

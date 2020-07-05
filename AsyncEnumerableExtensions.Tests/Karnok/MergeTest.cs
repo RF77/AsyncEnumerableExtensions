@@ -4,9 +4,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Interactive.Async.Karnok;
 using System.Linq;
 using System.Threading.Tasks;
+using AsyncEnumerableExtensions.Karnok;
 using Xunit;
 
 namespace AsyncEnumerableExtensions.Tests.Karnok

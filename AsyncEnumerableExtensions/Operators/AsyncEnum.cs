@@ -3,9 +3,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Interactive.Async.Karnok;
 using System.Threading;
 using System.Threading.Tasks;
+using AsyncEnumerableExtensions.Karnok;
 
 namespace System.Linq
 {

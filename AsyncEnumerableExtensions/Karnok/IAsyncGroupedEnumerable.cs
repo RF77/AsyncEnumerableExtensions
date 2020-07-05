@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace System.Interactive.Async.Karnok
+namespace AsyncEnumerableExtensions.Karnok
 {
     /// <summary>
     /// An IAsyncEnumerable with a key property to support grouping operations.

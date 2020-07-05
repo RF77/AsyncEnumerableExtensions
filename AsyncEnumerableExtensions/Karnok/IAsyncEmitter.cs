@@ -2,10 +2,11 @@
 // Licensed under the Apache 2.0 License.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Interactive.Async.Karnok
+namespace AsyncEnumerableExtensions.Karnok
 {
     /// <summary>
     /// Provides API for generating items.

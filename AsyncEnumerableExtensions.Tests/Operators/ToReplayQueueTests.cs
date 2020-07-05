@@ -24,7 +24,6 @@ namespace Tests
 {
     public class ToReplayQueueTests : UnitTestBase
     {
-        private readonly ITestOutputHelper _output;
         private static int _counter;
         private DateTime _startTime;
         private DateTime _lastTimeStamp;
