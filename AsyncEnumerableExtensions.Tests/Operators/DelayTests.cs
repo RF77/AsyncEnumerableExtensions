@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Time.AsyncEnumerable.Extensions.Tests
+namespace AsyncEnumerableExtensions.Tests.Operators
 {
 	public class DelayTests : UnitTestBase
 	{

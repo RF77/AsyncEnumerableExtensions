@@ -1,6 +1,6 @@
 ﻿using Xunit.Abstractions;
 
-namespace Time.AsyncEnumerable.Extensions.Tests.Operators
+namespace AsyncEnumerableExtensions.Tests.Operators
 {
 	public class ForEachAsAsyncEnumerableTest : UnitTestBase
 	{

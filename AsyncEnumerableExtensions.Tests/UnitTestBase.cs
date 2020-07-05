@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Time.AsyncEnumerable.Extensions.Tests
+namespace AsyncEnumerableExtensions.Tests
 {
 	public class UnitTestBase
 	{

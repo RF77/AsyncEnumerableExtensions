@@ -11,7 +11,7 @@
 
 using System;
 
-namespace Time.AsyncEnumerable.Extensions.Tests
+namespace AsyncEnumerableExtensions.Tests
 {
 	public class ActionDisposable : IDisposable
 	{

@@ -11,7 +11,6 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using Time.AsyncEnumerable.Extensions.Tests;
 using Xunit;
 using Xunit.Abstractions;
 

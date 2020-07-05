@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Time.AsyncEnumerable.Extensions.Tests
+namespace AsyncEnumerableExtensions.Tests
 {
 	public static class TestExtensions
 	{

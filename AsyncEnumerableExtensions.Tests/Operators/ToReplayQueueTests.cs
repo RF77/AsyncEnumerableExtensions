@@ -16,11 +16,10 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
-using Time.AsyncEnumerable.Extensions.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Tests
+namespace AsyncEnumerableExtensions.Tests.Operators
 {
     public class ToReplayQueueTests : UnitTestBase
     {
