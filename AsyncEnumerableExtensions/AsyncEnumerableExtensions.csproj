@@ -10,6 +10,8 @@
     <PackageTags>Time Async Streams IAsyncEnumerable Extensions Enumerable Asynchronous</PackageTags>
     <Description>Additional IAsyncEnumerable Extension Methods</Description>
     <LangVersion>8.0</LangVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>SigningKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
