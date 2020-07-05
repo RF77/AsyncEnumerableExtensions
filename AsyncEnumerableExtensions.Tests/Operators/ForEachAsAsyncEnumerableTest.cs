@@ -15,7 +15,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task TestForEachAsAsyncEnumerableWithAsyncEnumerable()
+		public async Task TestForEachAsAsyncEnumerableWithAsyncEnumerable()
 		{
 			var stream = Range(0, 5).Delay(100).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 2);
 
@@ -23,7 +23,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task TestForEachAsAsyncEnumerableWithAsyncEnumerableWithCancellation()
+		public async Task TestForEachAsAsyncEnumerableWithAsyncEnumerableWithCancellation()
 		{
 			var cts = new CancellationTokenSource(300);
 			var stream = Range(0, 5).Delay(100).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 2, cts.Token);
@@ -32,7 +32,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task TestForEachAsAsyncEnumerableWithEnumerables()
+		public async Task TestForEachAsAsyncEnumerableWithEnumerables()
 		{
 			var stream = Enumerable.Range(0, 5).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 2);
 
@@ -40,7 +40,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task TestForEachAsAsyncEnumerableWithEnumerablesWithCancellation()
+		public async Task TestForEachAsAsyncEnumerableWithEnumerablesWithCancellation()
 		{
 			var cts = new CancellationTokenSource(300);
 			var stream = Enumerable.Range(0, 5).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 2, cts.Token);
@@ -49,7 +49,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		}
 
 		[Fact]
-		public async System.Threading.Tasks.Task TestForEachAsAsyncEnumerableWithEnumerablesWithCancellationOnConsumer()
+		public async Task TestForEachAsAsyncEnumerableWithEnumerablesWithCancellationOnConsumer()
 		{
 			var cts = new CancellationTokenSource(300);
 			var stream = Enumerable.Range(0, 5).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 2);
