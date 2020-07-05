@@ -57,6 +57,15 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 			await WriteStreamToOutputAsync(stream, cts.Token);
 		}
 
+		[Fact]
+		public async Task TestForEachAsAsyncEnumerableWithEnumerablesWithCancellationOnAsyncFunc()
+		{
+			var cts = new CancellationTokenSource(300);
+			var stream = Enumerable.Range(0, 5).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i, cts.Token), 2);
+
+			await WriteStreamToOutputAsync(stream);
+		}
+
 		public async IAsyncEnumerable<string> GetMoreNumbersFromNumber(int number, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 		{
 			string current = "";
