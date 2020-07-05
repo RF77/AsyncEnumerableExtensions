@@ -13,28 +13,26 @@ using AsyncEnumerableExtensions.Karnok;
 
 namespace AsyncEnumerableExtensions.Queue
 {
-	public class AsyncStreamQueue<TStreamItem, TSourceItem>
+	public class AsyncStreamQueue<TResult, TSource>
 	{
-		public IAsyncEnumerable<TStreamItem> ExecuteParallelAsync(IEnumerable<AsyncStreamQueueItem<TStreamItem, TSourceItem>> inputItems, int maxConcurrentTasks, CancellationToken cancellationToken)
+		public IAsyncEnumerable<TResult> ExecuteParallelAsync(IEnumerable<AsyncStreamQueueItem<TResult, TSource>> inputItems, int maxConcurrentTasks, CancellationToken cancellationToken)
 		{
 			var throttler = new SemaphoreSlim(maxConcurrentTasks);
 
-			IEnumerable<IAsyncEnumerable<TStreamItem>> streams = inputItems.Select(
+			IEnumerable<IAsyncEnumerable<TResult>> streams = inputItems.Select(
 				inputItem => ExecuteItem(throttler, inputItem, cancellationToken));
 
 			return streams.MergeConcurrently();
 		}
 
 		[SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-		public IAsyncEnumerable<TStreamItem> ExecuteParallelAsync(IAsyncEnumerable<AsyncStreamQueueItem<TStreamItem, TSourceItem>> inputItems, int maxConcurrentTasks, CancellationToken cancellationToken)
+		public IAsyncEnumerable<TResult> ExecuteParallelAsync(IAsyncEnumerable<AsyncStreamQueueItem<TResult, TSource>> inputItems, int maxConcurrentTasks, CancellationToken cancellationToken)
 		{
 			var throttler = new SemaphoreSlim(maxConcurrentTasks);
 
-			var multicastStream = new MulticastAsyncEnumerable<TStreamItem>();
+			var multicastStream = new MulticastAsyncEnumerable<TResult>();
 
-			bool allStreamsStarted = false;
-
-			HashSet<IAsyncEnumerable<TStreamItem>> runningStreams = new HashSet<IAsyncEnumerable<TStreamItem>>();
+			HashSet<Task> runningStreams = new HashSet<Task>();
 
 			HandleInputStreams();
 
@@ -44,17 +42,14 @@ namespace AsyncEnumerableExtensions.Queue
 			{
 				try
 				{
-					await foreach (AsyncStreamQueueItem<TStreamItem, TSourceItem> inputItem in inputItems.WithCancellation(cancellationToken))
+					await foreach (AsyncStreamQueueItem<TResult, TSource> inputItem in inputItems.WithCancellation(cancellationToken))
 					{
-						var stream = ExecuteItem(throttler, inputItem, cancellationToken).Do(async i => await multicastStream.Next(i), async i => await multicastStream.Error(i));
-#pragma warning disable 4014
-						stream.DoOnDispose(async () => await RemoveStreamAndCloseMainStreamIfAllFinishedAsync(stream));
-#pragma warning restore 4014
-						runningStreams.Add(stream);
+						var stream = ExecuteItem(throttler, inputItem, cancellationToken);
+						runningStreams.Add(ConsumeSubStream(stream));
 					}
 
-					allStreamsStarted = true;
-					await RemoveStreamAndCloseMainStreamIfAllFinishedAsync(null);
+					await Task.WhenAll(runningStreams);
+					await multicastStream.Complete();
 				}
 				catch (Exception e)
 				{
@@ -62,27 +57,29 @@ namespace AsyncEnumerableExtensions.Queue
 				}
 			}
 
-			async Task RemoveStreamAndCloseMainStreamIfAllFinishedAsync(IAsyncEnumerable<TStreamItem> stream)
+			async Task ConsumeSubStream(IAsyncEnumerable<TResult> source)
 			{
-				if (stream != null)
+				try
 				{
-					runningStreams.Remove(stream);
+					await foreach (var item in source.WithCancellation(cancellationToken))
+					{
+						await multicastStream.Next(item);
+					}
 				}
-
-				if (allStreamsStarted && !runningStreams.Any())
+				catch (Exception e)
 				{
-					await multicastStream.Complete();
+					await multicastStream.Error(e);
 				}
 			}
 		}
 
-		private async IAsyncEnumerable<TStreamItem> ExecuteItem(SemaphoreSlim throttler, AsyncStreamQueueItem<TStreamItem, TSourceItem> item, [EnumeratorCancellation] CancellationToken cancellationToken)
+		private async IAsyncEnumerable<TResult> ExecuteItem(SemaphoreSlim throttler, AsyncStreamQueueItem<TResult, TSource> item, [EnumeratorCancellation] CancellationToken cancellationToken=default)
 		{
 			await throttler.WaitAsync(cancellationToken);
 			try
 			{
-				IAsyncEnumerable<TStreamItem> stream = item.StreamProducer(item.Source, cancellationToken);
-				await foreach (TStreamItem streamItem in stream.WithCancellation(cancellationToken))
+				IAsyncEnumerable<TResult> stream = item.StreamProducer(item.Source);
+				await foreach (TResult streamItem in stream.WithCancellation(cancellationToken))
 				{
 					yield return streamItem;
 				}

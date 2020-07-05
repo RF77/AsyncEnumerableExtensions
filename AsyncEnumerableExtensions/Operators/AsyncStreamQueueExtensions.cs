@@ -8,9 +8,9 @@ namespace System.Linq
 	{
 		public static IAsyncEnumerable<TResult> ForEachAsAsyncEnumerable<TResult, TSource>(
 			this IEnumerable<TSource> source,
-			Func<TSource, CancellationToken, IAsyncEnumerable<TResult>> function,
+			Func<TSource, IAsyncEnumerable<TResult>> function,
 			int maxConcurrentTasks,
-			CancellationToken cancellationToken)
+			CancellationToken cancellationToken = default)
 		{
 			var queue = new AsyncStreamQueue<TResult, TSource>();
 			return queue.ExecuteParallelAsync(source.Select(sourceItem => new AsyncStreamQueueItem<TResult, TSource>(sourceItem, function)), maxConcurrentTasks, cancellationToken);
@@ -18,9 +18,9 @@ namespace System.Linq
 
 		public static IAsyncEnumerable<TResult> ForEachAsAsyncEnumerable<TResult, TSource>(
 			this IAsyncEnumerable<TSource> source,
-			Func<TSource, CancellationToken, IAsyncEnumerable<TResult>> function,
+			Func<TSource, IAsyncEnumerable<TResult>> function,
 			int maxConcurrentTasks,
-			CancellationToken cancellationToken)
+			CancellationToken cancellationToken = default)
 		{
 			var queue = new AsyncStreamQueue<TResult, TSource>();
 			return queue.ExecuteParallelAsync(source.Select(sourceItem => new AsyncStreamQueueItem<TResult, TSource>(sourceItem, function)), maxConcurrentTasks, cancellationToken);

@@ -26,18 +26,18 @@ namespace AsyncEnumerableExtensions.Tests
 			return System.Linq.AsyncEnumerable.Range(start, count);
 		}
 
-		protected async void WriteStreamToOutput(IAsyncEnumerable<int> replayedStream,
+		protected async void WriteStreamToOutput<T>(IAsyncEnumerable<T> stream,
 			CancellationToken cancellationToken = default)
 		{
-			await WriteStreamToOutputAsync(replayedStream, cancellationToken);
+			await WriteStreamToOutputAsync(stream, cancellationToken);
 		}
 
-		protected async Task WriteStreamToOutputAsync(IAsyncEnumerable<int> replayedStream,
+		protected async Task WriteStreamToOutputAsync<T>(IAsyncEnumerable<T> stream,
 			CancellationToken cancellationToken = default)
 		{
 			try
 			{
-				await foreach (var item in replayedStream.WithCancellation(cancellationToken))
+				await foreach (var item in stream.WithCancellation(cancellationToken))
 				{
 					Write($"Received: {item}");
 				}
