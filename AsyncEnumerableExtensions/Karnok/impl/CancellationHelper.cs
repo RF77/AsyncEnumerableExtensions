@@ -4,7 +4,7 @@
 
 using System.Threading;
 
-namespace System.Interactive.Async.Karnok.impl
+namespace AsyncEnumerableExtensions.Karnok.impl
 {
     /// <summary>
     /// Utility class to work with CancellationTokenSources atomically.

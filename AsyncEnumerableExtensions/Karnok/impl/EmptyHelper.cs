@@ -3,7 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 
-namespace System.Interactive.Async.Karnok.impl
+namespace AsyncEnumerableExtensions.Karnok.impl
 {
     /// <summary>
     /// Hosts the EmptyIndicator singleton.

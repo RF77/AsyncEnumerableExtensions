@@ -2,10 +2,11 @@
 // Licensed under the Apache 2.0 License.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace System.Interactive.Async.Karnok.impl
+namespace AsyncEnumerableExtensions.Karnok.impl
 {
     /// <summary>
     /// A minimal awaitable construct that supports only one awaiter

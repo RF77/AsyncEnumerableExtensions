@@ -2,10 +2,11 @@
 // Licensed under the Apache 2.0 License.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace System.Interactive.Async.Karnok.impl
+namespace AsyncEnumerableExtensions.Karnok.impl
 {
     /// <summary>
     /// Helper methods for aggregating multiple Exceptions atomically.

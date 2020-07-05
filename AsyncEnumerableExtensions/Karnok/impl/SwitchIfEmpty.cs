@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.Interactive.Async.Karnok.impl
+namespace AsyncEnumerableExtensions.Karnok.impl
 {
     internal sealed class SwitchIfEmpty<T> : IAsyncEnumerable<T>
     {

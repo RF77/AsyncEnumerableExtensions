@@ -2,7 +2,9 @@
 // Licensed under the Apache 2.0 License.
 // See LICENSE file in the project root for full license information.
 
-namespace System.Interactive.Async.Karnok.impl
+using System;
+
+namespace AsyncEnumerableExtensions.Karnok.impl
 {
     internal struct ArrayQueue<T>
     {
