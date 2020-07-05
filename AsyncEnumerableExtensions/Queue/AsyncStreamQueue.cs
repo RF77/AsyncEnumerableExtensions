@@ -75,15 +75,28 @@ namespace AsyncEnumerableExtensions.Queue
 
 		private async IAsyncEnumerable<TResult> ExecuteItem(SemaphoreSlim throttler, AsyncStreamQueueItem<TResult, TSource> item, [EnumeratorCancellation] CancellationToken cancellationToken=default)
 		{
-			await throttler.WaitAsync(cancellationToken);
 			try
 			{
-				IAsyncEnumerable<TResult> stream = item.StreamProducer(item.Source);
-				await foreach (TResult streamItem in stream.WithCancellation(cancellationToken))
+				bool canContinue = true;
+				try
 				{
-					yield return streamItem;
+					await throttler.WaitAsync(cancellationToken);
+				}
+				catch (OperationCanceledException)
+				{
+					canContinue = false;
+				}
+
+				if (canContinue)
+				{
+					IAsyncEnumerable<TResult> stream = item.StreamProducer(item.Source);
+					await foreach (TResult streamItem in stream.WithCancellation(cancellationToken))
+					{
+						yield return streamItem;
+					}
 				}
 			}
+			
 			finally
 			{
 				throttler.Release();

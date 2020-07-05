@@ -42,6 +42,10 @@ namespace AsyncEnumerableExtensions.Tests
 					Write($"Received: {item}");
 				}
 			}
+			catch (OperationCanceledException)
+			{
+				Write($"WriteStreamToOutput Operation was canceled");
+			}
 			catch (Exception e)
 			{
 				Write($"WriteStreamToOutput catched {e.GetType().Name} Exception");
