@@ -6,7 +6,7 @@
     <Copyright>Copyright (c) rf77, akarnokd</Copyright>
     <Company></Company>
     <Authors>rf77, akarnokd</Authors>
-    <PackageLicenseExpression>Apache Licence 2.0</PackageLicenseExpression>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageTags>Time Async Streams IAsyncEnumerable Extensions Enumerable Asynchronous</PackageTags>
     <Description>Additional IAsyncEnumerable Extension Methods</Description>
     <LangVersion>8.0</LangVersion>
