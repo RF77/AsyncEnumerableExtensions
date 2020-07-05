@@ -6,4 +6,6 @@ Due to conflicts, it's difficult to use the offical libs and async-enumerable-do
 Finally I add my own extensions, described here later.
 
 
-Thanks to David Karnok (https://github.com/akarnokd)
+Thanks to David Karnok (https://github.com/akarnokd) for using the following parts of his great library:
+ - Operators which are not existing in System.Linq.Async and System.Interactive.Async libs
+ - Replay- Multicast and UnicastAsyncEnumerables
