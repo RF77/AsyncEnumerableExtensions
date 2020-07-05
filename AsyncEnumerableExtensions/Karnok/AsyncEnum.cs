@@ -14,7 +14,7 @@ namespace System.Linq
     /// <summary>
     /// Factory and extension methods for working with <see cref="IAsyncEnumerable{T}"/>s.
     /// </summary>
-    public static partial class AsyncEnumerableEx
+    public static partial class AsyncEnum
     {
         #region - ValidationHelper -
         /// <summary>
@@ -101,7 +101,7 @@ namespace System.Linq
         /// <remarks>
         /// Note that the <see cref="CancellationToken"/> is shared across all instantiations of the
         /// async sequence and thus it is recommended this Timer is created in a deferred manner,
-        /// such as <see cref="AsyncEnumerableEx.Defer{T}"/>.
+        /// such as <see cref="AsyncEnum.Defer{T}"/>.
         /// </remarks>
         public static IAsyncEnumerable<long> Timer(TimeSpan delay, CancellationToken token)
         {

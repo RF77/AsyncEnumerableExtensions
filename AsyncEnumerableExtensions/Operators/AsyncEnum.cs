@@ -12,7 +12,7 @@ namespace System.Linq
     /// <summary>
     /// New Extensions
     /// </summary>
-    public static partial class AsyncEnumerableEx
+    public static partial class AsyncEnum
     {
         /// <summary>
         /// Source stream will be cached for multiple enumerations of later consumers

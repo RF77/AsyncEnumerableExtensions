@@ -1,7 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <Version>0.1.0-preview</Version>
+    <Copyright>Copyright (c) rf77, akarnokd</Copyright>
+    <Company></Company>
+    <Authors>rf77, akarnokd</Authors>
+    <PackageLicenseExpression>Apache Licence 2.0</PackageLicenseExpression>
+    <PackageTags>Time Async Streams IAsyncEnumerable Extensions Enumerable Asynchronous</PackageTags>
+    <Description>Additional IAsyncEnumerable Extension Methods</Description>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
