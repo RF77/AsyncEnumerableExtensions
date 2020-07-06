@@ -149,5 +149,41 @@ namespace AsyncEnumerableExtensions.Tests
 
 			await WriteStreamToOutputAsync(stream);
 		}
+
+		[Fact]
+		public async Task TestUniCastEnumWithCancellation()
+		{
+			var cts = new CancellationTokenSource(30);
+			var stream = TestProducer();
+
+			await WriteStreamToOutputAsync(stream, cts.Token);
+		}
+
+		private IAsyncEnumerable<int> TestProducer()
+		{
+			var queue = new UnicastAsyncEnumerable<int>();
+
+			Handle();
+
+			return queue;
+
+			async void Handle()
+			{
+				try
+				{
+					for (int i = 0; i < 10; i++)
+					{
+						await Task.Delay(10);
+						await queue.Next(i);
+					}
+				}
+				finally
+				{
+					await queue.Complete();
+				}
+
+			}
+
+		}
 	}
 }

@@ -28,6 +28,7 @@ namespace AsyncEnumerableExtensions.Karnok
         private int _once;
 
         private volatile bool _disposed;
+        private bool _canceled = false;
 
         /// <summary>
         /// Returns true if there is currently a consumer to this async sequence.
@@ -102,7 +103,7 @@ namespace AsyncEnumerableExtensions.Karnok
             {
                 cancellationToken.Register(v => {
                     var w = (v as UnicastAsyncEnumerable<TSource>);
-                    w._disposed = true;
+                    w._canceled = true;
                 }, this);
                 return new UnicastEnumerator(this);
             }
@@ -131,6 +132,10 @@ namespace AsyncEnumerableExtensions.Karnok
             {
                 for (; ; )
                 {
+	                if (_parent._canceled)
+	                {
+		                return false;
+	                }
                     var d = _parent._done;
                     var success = _parent._queue.TryDequeue(out var v);
 
