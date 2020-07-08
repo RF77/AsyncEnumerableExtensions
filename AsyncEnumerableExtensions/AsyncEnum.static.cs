@@ -1,13 +1,6 @@
-﻿// /*******************************************************************************
-//  * Copyright (c) 2020 by RF77 (https://github.com/RF77)
-//  * All rights reserved. This program and the accompanying materials
-//  * are made available under the terms of the Eclipse Public License v1.0
-//  * which accompanies this distribution, and is available at
-//  * http://www.eclipse.org/legal/epl-v10.html
-//  *
-//  * Contributors:
-//  *    RF77 - initial API and implementation and/or initial documentation
-//  *******************************************************************************/
+﻿// Copyright (c) 2020 by RF77 (https://github.com/RF77)
+// Licensed under the Apache 2.0 License.
+// See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
 

@@ -1,6 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2020 by RF77 (https://github.com/RF77)
+// Licensed under the Apache 2.0 License.
+// See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace AsyncEnumerableExtensions.Queue
 {
