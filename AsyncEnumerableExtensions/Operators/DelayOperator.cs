@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace System.Linq
 {
-	public static class DelayExtension
+	public static class DelayOperator
 	{
 		public static async IAsyncEnumerable<T> Delay<T>(this IAsyncEnumerable<T> source, TimeSpan delay, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 		{

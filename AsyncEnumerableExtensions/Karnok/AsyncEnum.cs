@@ -498,7 +498,6 @@ namespace System.Linq
 			return MergeConcurrently(allSources);
 		}
 
-
 		/// <summary>
 		///     Returns a shared instance of an empty async sequence.
 		/// </summary>
