@@ -28,7 +28,7 @@ namespace System.Linq
 		/// <returns></returns>
 		public static IAsyncEnumerable<T> RemoveTimeStamp<T>(this IAsyncEnumerable<TimeStampItem<T>> stream)
 		{
-			return stream.Select(i => i.Item);
+			return stream.Select(i => i.Content);
 		}
 	}
 }

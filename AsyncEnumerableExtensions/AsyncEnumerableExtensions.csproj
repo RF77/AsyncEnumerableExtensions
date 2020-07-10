@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.2.0-preview</Version>
+    <Version>0.2.1-preview</Version>
     <Copyright>Copyright (c) rf77, akarnokd</Copyright>
     <Company></Company>
     <Authors>rf77, akarnokd</Authors>

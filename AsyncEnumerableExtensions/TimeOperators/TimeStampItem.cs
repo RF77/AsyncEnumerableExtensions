@@ -9,16 +9,16 @@ namespace AsyncEnumerableExtensions.TimeOperators
 	/// <summary>
 	/// Any type of item with an timestamp
 	/// </summary>
-	public class TimeStampItem<T>
+	public class TimeStampItem<T> : ITimeStampItem<T>
 	{
 		public TimeStampItem(DateTime timeStamp, T item)
 		{
 			TimeStamp = timeStamp;
-			Item = item;
+			Content = item;
 		}
 
 		public DateTime TimeStamp { get; }
 
-		public T Item { get; }
+		public T Content { get; }
 	}
 }
