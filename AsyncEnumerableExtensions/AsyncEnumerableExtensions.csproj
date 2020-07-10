@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
-    <Version>0.1.3-preview</Version>
+    <Version>0.2.0-preview</Version>
     <Copyright>Copyright (c) rf77, akarnokd</Copyright>
     <Company></Company>
     <Authors>rf77, akarnokd</Authors>
@@ -15,7 +15,8 @@
     <PackageId>rf77.AsyncEnumerableExtensions</PackageId>
     <Product>Async Enumerable Extensions for .NET</Product>
     <PackageProjectUrl>https://github.com/RF77/AsyncEnumerableExtensions</PackageProjectUrl>
-    <PackageReleaseNotes>Added Merge Operators for IAsyncEnumerable of IAsyncEnumerables</PackageReleaseNotes>
+    <PackageReleaseNotes>Added Merge Operators for IAsyncEnumerable of IAsyncEnumerables
+Support Items with TimeStamp</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
