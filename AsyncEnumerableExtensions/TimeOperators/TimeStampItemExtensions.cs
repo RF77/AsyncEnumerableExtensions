@@ -15,7 +15,7 @@ namespace System.Linq
 		/// <typeparam name="T"></typeparam>
 		/// <param name="stream"></param>
 		/// <returns></returns>
-		public static IAsyncEnumerable<TimeStampItem<T>> AddCurrentTime<T>(this IAsyncEnumerable<T> stream)
+		public static IAsyncEnumerable<ITimeStampItem<T>> AddCurrentTime<T>(this IAsyncEnumerable<T> stream)
 		{
 			return stream.Select(i => new TimeStampItem<T>(DateTime.Now, i));
 		}
@@ -26,7 +26,7 @@ namespace System.Linq
 		/// <typeparam name="T"></typeparam>
 		/// <param name="stream"></param>
 		/// <returns></returns>
-		public static IAsyncEnumerable<T> RemoveTimeStamp<T>(this IAsyncEnumerable<TimeStampItem<T>> stream)
+		public static IAsyncEnumerable<T> RemoveTimeStamp<T>(this IAsyncEnumerable<ITimeStampItem<T>> stream)
 		{
 			return stream.Select(i => i.Content);
 		}

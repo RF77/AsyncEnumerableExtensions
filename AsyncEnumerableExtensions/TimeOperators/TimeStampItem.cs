@@ -7,14 +7,14 @@ using System;
 namespace AsyncEnumerableExtensions.TimeOperators
 {
 	/// <summary>
-	/// Any type of item with an timestamp
+	/// Any type of content with an timestamp
 	/// </summary>
 	public class TimeStampItem<T> : ITimeStampItem<T>
 	{
-		public TimeStampItem(DateTime timeStamp, T item)
+		public TimeStampItem(DateTime timeStamp, T content)
 		{
 			TimeStamp = timeStamp;
-			Content = item;
+			Content = content;
 		}
 
 		public DateTime TimeStamp { get; }
