@@ -199,19 +199,6 @@ namespace System.Linq
 		}
 
 		/// <summary>
-		///     Wraps an <see cref="IObservable{T}" /> and turns it into an async sequence that
-		///     buffers all items until they are requested by the consumer of the async sequence.
-		/// </summary>
-		/// <typeparam name="T">The element type.</typeparam>
-		/// <param name="source">The source observable sequence to turn into an async sequence.</param>
-		/// <returns>The new IAsyncEnumerable instance.</returns>
-		public static IAsyncEnumerable<T> ToAsyncEnumerable<T>(this IObservable<T> source)
-		{
-			RequireNonNull(source, nameof(source));
-			return new FromObservable<T>(source);
-		}
-
-		/// <summary>
 		///     Wraps an <see cref="IEnumerable{T}" /> sequence into an async sequence.
 		/// </summary>
 		/// <typeparam name="T">The element type.</typeparam>
