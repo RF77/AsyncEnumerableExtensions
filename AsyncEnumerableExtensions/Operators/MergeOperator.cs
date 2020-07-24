@@ -3,6 +3,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using AsyncEnumerableExtensions.Karnok;
 using AsyncEnumerableExtensions.Karnok.impl;
@@ -78,9 +80,10 @@ namespace System.Linq
 		/// </summary>
 		/// <typeparam name="T">The type of the elements in the source sequences.</typeparam>
 		/// <param name="sources">Observable sequence of inner async-enumerable sequences.</param>
+		/// <param name="cancellationToken">Cancellation Token to cancel the enumeration</param>
 		/// <returns>The async-enumerable sequence that merges the elements of the inner sequences.</returns>
 		/// <exception cref="T:System.ArgumentNullException"><paramref name="sources" /> is null.</exception>
-		public static IAsyncEnumerable<T> MergeConcurrently<T>(this IAsyncEnumerable<IAsyncEnumerable<T>> sources)
+		public static IAsyncEnumerable<T> MergeConcurrently<T>(this IAsyncEnumerable<IAsyncEnumerable<T>> sources, CancellationToken cancellationToken = default)
 		{
 			var queue = new UnicastAsyncEnumerable<T>();
 			var tasks = new List<Task>();
@@ -94,7 +97,7 @@ namespace System.Linq
 			{
 				try
 				{
-					await foreach (var stream in sources)
+					await foreach (var stream in sources.WithCancellation(cancellationToken))
 					{
 						tasks.Add(StreamSource(stream));
 					}
@@ -113,6 +116,7 @@ namespace System.Linq
 				catch (Exception e)
 				{
 					ExceptionHelper.AddException(ref thrownException, e);
+					await queue.Error(thrownException);
 				}
 				finally
 				{
@@ -124,7 +128,7 @@ namespace System.Linq
 			{
 				try
 				{
-					await foreach (var item in source)
+					await foreach (var item in source.WithCancellation(cancellationToken))
 					{
 						await queue.Next(item);
 					}
