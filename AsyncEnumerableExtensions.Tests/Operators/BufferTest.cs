@@ -86,5 +86,42 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 			});
 		}
 
+		[Fact]
+		public async Task BufferWhereMaxSizeWillOccurComsumeAlle()
+		{
+			CancellationTokenSource cts = new CancellationTokenSource();
+			var all = new List<string>();
+
+			var numOfBuffers = 0;
+
+			await foreach (var buffer in GetNumbersAsync(9, "A", cts.Token).Buffer(4, TimeSpan.FromMilliseconds(1000)))
+			{
+				all.AddRange(buffer);
+				numOfBuffers++;
+			}
+
+			Assert.True(all.Count == 9);
+			Assert.True(numOfBuffers == 3);
+		}
+
+
+		[Fact]
+		public async Task BufferWhereMaxTimeWillOccurComsumeAlle()
+		{
+			CancellationTokenSource cts = new CancellationTokenSource();
+			var all = new List<string>();
+
+			var numOfBuffers = 0;
+
+			await foreach (var buffer in GetNumbersAsync(9, "A", cts.Token).Buffer(6, TimeSpan.FromMilliseconds(300)))
+			{
+				all.AddRange(buffer);
+				numOfBuffers++;
+			}
+
+			Assert.True(all.Count == 9);
+			Assert.True(numOfBuffers >= 2);
+		}
+
 	}
 }
