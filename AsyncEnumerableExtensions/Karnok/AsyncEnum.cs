@@ -407,7 +407,7 @@ namespace System.Linq
 		///     the delay has not yet passed for it.
 		/// </param>
 		/// <returns>The new IAsyncEnumerable sequence.</returns>
-		public static IAsyncEnumerable<T> Debounce<T>(this IAsyncEnumerable<T> source, TimeSpan delay,
+		public static IAsyncEnumerable<T> Throttle<T>(this IAsyncEnumerable<T> source, TimeSpan delay,
 			bool emitLast = false)
 		{
 			RequireNonNull(source, nameof(source));
@@ -443,15 +443,20 @@ namespace System.Linq
 		/// <returns>The new IAsyncEnumerable sequence.</returns>
 		public static IAsyncEnumerable<TSource> MergeConcurrently<TSource>(params IAsyncEnumerable<TSource>[] sources)
 		{
-			RequireNonNull(sources, nameof(sources));
-			switch (sources.Length)
+			return MergeConcurrentlyImpl().HandleInDispatcher();
+
+			IAsyncEnumerable<TSource> MergeConcurrentlyImpl()
 			{
-				case 0:
-					return Empty<TSource>();
-				case 1:
-					return sources[0];
-				default:
-					return new Merge<TSource>(sources);
+				RequireNonNull(sources, nameof(sources));
+				switch (sources.Length)
+				{
+					case 0:
+						return Empty<TSource>();
+					case 1:
+						return sources[0];
+					default:
+						return new Merge<TSource>(sources);
+				}
 			}
 		}
 
