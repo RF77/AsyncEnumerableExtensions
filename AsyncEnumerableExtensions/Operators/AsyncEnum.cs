@@ -3,6 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using AsyncEnumerableExtensions.Karnok;
@@ -24,11 +25,60 @@ namespace System.Linq
 		public static IAsyncEnumerable<T> ToReplayQueue<T>(this IAsyncEnumerable<T> source,
 			CancellationToken cancellationToken = default)
 		{
-			var queue = new ReplayAsyncEnumerable<T>();
+			return ToReplayQueueImpl().HandleInDispatcher(cancellationToken);
 
-			FillQueue(source, queue, cancellationToken);
+			IAsyncEnumerable<T> ToReplayQueueImpl()
+			{
+				var queue = new ReplayAsyncEnumerable<T>();
 
-			return queue;
+				FillQueue(source, queue, cancellationToken);
+
+				return queue;
+			}
+		}
+
+		/// <summary>
+		/// If the caller runs in a dispatcher thread (one with a synchronization context) a stream running in another thread will continue in the dispatcher thread
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="cancellationToken"></param>
+		/// <returns></returns>
+		public static async IAsyncEnumerable<T> HandleInDispatcher<T>(this IAsyncEnumerable<T> source,
+			[EnumeratorCancellation] CancellationToken cancellationToken = default)
+		{
+			await foreach (var item in source.WithCancellation(cancellationToken))
+			{
+				yield return item;
+			}
+		}
+
+
+		//TODO: is not working!!!!!
+		/// <summary>
+		/// Stream will be handled in a worker or dispatcher thread (unknown)
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="cancellationToken"></param>
+		/// <returns></returns>
+		internal static async IAsyncEnumerable<T> HandleInThreadPoolThread<T>(this IAsyncEnumerable<T> source,
+			[EnumeratorCancellation] CancellationToken cancellationToken = default)
+		{
+			var stream = await Task.Run( () => RunInBackgroundThread(source, cancellationToken), cancellationToken);
+
+			await foreach (var item in stream.WithCancellation(cancellationToken).ConfigureAwait(false))
+			{
+				yield return item;
+			}
+		}
+
+		private static async IAsyncEnumerable<T> RunInBackgroundThread<T>(IAsyncEnumerable<T> source, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+		{
+			await foreach(var item in source.WithCancellation(cancellationToken).ConfigureAwait(false))
+			{
+				yield return item;
+			}
 		}
 
 		/// <summary>
@@ -42,11 +92,16 @@ namespace System.Linq
 		public static IAsyncEnumerable<T> ToReplayQueue<T>(this IAsyncEnumerable<T> source, int maxSize,
 			CancellationToken cancellationToken = default)
 		{
-			var queue = new ReplayAsyncEnumerable<T>(maxSize);
+			return ToReplayQueueImpl().HandleInDispatcher(cancellationToken);
 
-			FillQueue(source, queue, cancellationToken);
+			IAsyncEnumerable<T> ToReplayQueueImpl()
+			{
+				var queue = new ReplayAsyncEnumerable<T>(maxSize);
 
-			return queue;
+				FillQueue(source, queue, cancellationToken);
+
+				return queue;
+			}
 		}
 
 		/// <summary>
@@ -61,11 +116,16 @@ namespace System.Linq
 		public static IAsyncEnumerable<T> ToReplayQueue<T>(this IAsyncEnumerable<T> source, int maxSize,
 			TimeSpan maxAge, CancellationToken cancellationToken = default)
 		{
-			var queue = new ReplayAsyncEnumerable<T>(maxSize, maxAge);
+			return ToReplayQueueImpl().HandleInDispatcher(cancellationToken);
 
-			FillQueue(source, queue, cancellationToken);
+			IAsyncEnumerable<T> ToReplayQueueImpl()
+			{
+				var queue = new ReplayAsyncEnumerable<T>(maxSize, maxAge);
 
-			return queue;
+				FillQueue(source, queue, cancellationToken);
+
+				return queue;
+			}
 		}
 
 		/// <summary>
@@ -79,13 +139,18 @@ namespace System.Linq
 		public static IAsyncEnumerable<T> ToReplayQueue<T>(this IAsyncEnumerable<T> source, TimeSpan maxAge,
 			CancellationToken cancellationToken = default)
 		{
-			var queue = new ReplayAsyncEnumerable<T>(maxAge);
+			return ToReplayQueueImpl().HandleInDispatcher(cancellationToken);
 
-			FillQueue(source, queue, cancellationToken);
+			IAsyncEnumerable<T> ToReplayQueueImpl()
+			{
+				var queue = new ReplayAsyncEnumerable<T>(maxAge);
 
-			return queue;
+				FillQueue(source, queue, cancellationToken);
+
+				return queue;
+			}
 		}
-
+		
 		/// <summary>
 		/// Kind of Multiplexer to multiple consumers (multiple enumeration) to provide the the same results
 		/// </summary>
@@ -96,11 +161,16 @@ namespace System.Linq
 		public static IAsyncEnumerable<T> ToMulticastQueue<T>(this IAsyncEnumerable<T> source,
 			CancellationToken cancellationToken = default)
 		{
-			var queue = new MulticastAsyncEnumerable<T>();
+			return ToMulticastQueueImpl().HandleInDispatcher(cancellationToken);
 
-			FillQueue(source, queue, cancellationToken);
+			IAsyncEnumerable<T> ToMulticastQueueImpl()
+			{
+				var queue = new MulticastAsyncEnumerable<T>();
 
-			return queue;
+				FillQueue(source, queue, cancellationToken);
+
+				return queue;
+			}
 		}
 
 		private static async void FillQueue<T>(IAsyncEnumerable<T> source, IAsyncConsumer<T> queue,

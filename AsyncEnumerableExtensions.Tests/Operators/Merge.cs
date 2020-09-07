@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Nito.AsyncEx;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -65,6 +66,24 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 			var list = await firstStream.MergeConcurrently(secondStream, thirdStream, forthStream).ToListAsync();
 
 			Assert.True(list.Count == 4);
+		}
+
+		[Fact]
+		public void MergeConcurrentlyOf4Sources_CalledInDispatcherThread()
+		{
+			AsyncContext.Run(async () =>
+			{
+				var threadId = Thread.CurrentThread.ManagedThreadId;
+				var firstStream = AsyncEnum.Just(1);
+				var secondStream = AsyncEnum.Just(2);
+				var thirdStream = AsyncEnum.Just(3);
+				var forthStream = AsyncEnum.Just(4);
+
+				var list = await firstStream.MergeConcurrently(secondStream, thirdStream, forthStream)
+					.Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId)).ToListAsync();
+
+				Assert.True(list.Count == 4);
+			});
 		}
 
 		[Fact]

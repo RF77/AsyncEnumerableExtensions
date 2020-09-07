@@ -246,6 +246,83 @@ namespace AsyncEnumerableExtensions.Tests.Operators
         }
 
         [Fact]
+        public void ReplayQueueWithDispatcher_ReplayQueueIsStillInDispatcherThread()
+        {
+	        AsyncContext.Run(async () =>
+	        {
+		        var threadId = Thread.CurrentThread.ManagedThreadId;
+		        var stream = GetNumbers(100);
+		        stream = stream.Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var replayedStream = stream.ToReplayQueue().HandleInDispatcher().Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var list = await replayedStream.ToListAsync();
+
+                Assert.True(list.Count == 100);
+	        });
+        }
+
+        [Fact]
+        public void HandleInDispatcher_ReplayQueueIsStillInDispatcherThread()
+        {
+	        AsyncContext.Run(async () =>
+	        {
+		        var threadId = Thread.CurrentThread.ManagedThreadId;
+		        var stream = GetNumbers(100);
+		        stream = stream.Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var replayedStream = stream.ToReplayQueue().HandleInDispatcher().Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var list = await replayedStream.ToListAsync();
+
+		        Assert.True(list.Count == 100);
+	        });
+        }
+
+        //[Fact]
+        //public void HandleInThreadpoolThread()
+        //{
+	       // AsyncContext.Run(async () =>
+	       // {
+		      //  var threadId = Thread.CurrentThread.ManagedThreadId;
+		      //  var stream = GetNumbers(100);
+		      //  stream = stream.Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		      //  var replayedStream = stream.HandleInThreadpoolThread().Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId != threadId));
+		      //  var list = await replayedStream.ToListAsync();
+
+		      //  Assert.True(list.Count == 100);
+	       // });
+        //}
+
+        [Fact]
+        public void ReplayQueueWithTimeWithDispatcher_ReplayQueueIsStillInDispatcherThread()
+        {
+	        AsyncContext.Run(async () =>
+	        {
+		        var threadId = Thread.CurrentThread.ManagedThreadId;
+		        var stream = GetNumbers(100);
+		        stream = stream.Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var replayedStream = stream.ToReplayQueue(TimeSpan.FromMilliseconds(100)).Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var list = await replayedStream.ToListAsync();
+
+		        Assert.True(list.Count == 100);
+	        });
+        }
+
+        [Fact]
+        public void MulticastQueueWithDispatcher_ReplayQueueIsStillInDispatcherThread()
+        {
+	        AsyncContext.Run(async () =>
+	        {
+		        var threadId = Thread.CurrentThread.ManagedThreadId;
+		        var stream = GetNumbers(100);
+		        stream = stream.Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var replayedStream = stream.ToMulticastQueue().Do(i => Assert.True(Thread.CurrentThread.ManagedThreadId == threadId));
+		        var list = await replayedStream.ToListAsync();
+
+		        Assert.True(list.Count > 90);
+	        });
+        }
+
+
+
+        [Fact]
         public async Task ReplayQueueWithMaxAgeAndMaxItems_EnumerateTo2Lists()
         {
             var amount = 25;
@@ -308,4 +385,12 @@ namespace AsyncEnumerableExtensions.Tests.Operators
             Write("Finished");
         }
     }
+
+    //public static class MyExtensions
+    //{
+	   // public static IAsyncEnumerable<T> HandleOnDispatcher<T>(this IAsyncEnumerable<T> source)
+	   // {
+
+	   // }
+    //}
 }
