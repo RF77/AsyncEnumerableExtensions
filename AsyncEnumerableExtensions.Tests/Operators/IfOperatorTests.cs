@@ -27,11 +27,25 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		[Fact]
 		public async Task TestWithIf()
 		{
-			var stream = GetNumbersAsync(20);
+			var stream = GetNumbersAsync(6);
 
 			stream = stream.If(i => i % 2 == 0, AddNumbers);
 
-			await WriteStreamToOutputAsync(stream);
+			var result = await stream.ToListAsync();
+
+			Assert.True(result.SequenceEqual(new List<int>(){1,2,3,5}));
+		}
+
+		[Fact]
+		public async Task TestWithIfWithElse()
+		{
+			var stream = GetNumbersAsync(8);
+
+			stream = stream.If(i => i % 2 == 0, AddNumbers, SubtractNumbers);
+
+			var result = await stream.ToListAsync();
+
+			Assert.True(result.SequenceEqual(new List<int>() { 2, 2, 10, 2 }));
 		}
 
 		[Fact]
@@ -63,7 +77,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 			{
 				Write($"yield {_counter}");
 				yield return _counter++;
-				await Task.Delay(10, cancellationToken);
+				await Task.Delay(50, cancellationToken);
 				//if (cancellationToken.IsCancellationRequested)
 				//{
 				//	yield break;
@@ -91,6 +105,21 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 				if (ab.Count == 2)
 				{
 					yield return ab[0] + ab[1];
+				}
+				else
+				{
+					yield break;
+				}
+			}
+		}
+
+		private async IAsyncEnumerable<int> SubtractNumbers(IAsyncEnumerable<int> numbers)
+		{
+			await foreach (var ab in numbers.Buffer(2))
+			{
+				if (ab.Count == 2)
+				{
+					yield return ab[1] - ab[0];
 				}
 				else
 				{

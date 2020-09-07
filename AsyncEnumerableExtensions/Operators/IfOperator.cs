@@ -15,11 +15,12 @@ namespace System.Linq
 	public static class IfOperator
 	{
 		public static async IAsyncEnumerable<T> If<T>(this IAsyncEnumerable<T> source, Func<T, bool> ifSelector,
-			Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> ifFunction, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+			Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> ifFunction, Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> elseFunction = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 		{
 			var ifSourceStream = new UnicastAsyncEnumerable<T>();
-			var elseResultStream = new UnicastAsyncEnumerable<T>();
+			var elseSourceStream = new UnicastAsyncEnumerable<T>();
 			var ifResultStream = ifFunction(ifSourceStream);
+			var elseResultStream = elseFunction?.Invoke(elseSourceStream) ?? elseSourceStream;
 
 			HandleStream();
 
@@ -34,7 +35,7 @@ namespace System.Linq
 			finally
 			{
 				await ifSourceStream.Complete();
-				await elseResultStream.Complete();
+				await elseSourceStream.Complete();
 			}
 			
 
@@ -50,7 +51,7 @@ namespace System.Linq
 						}
 						else
 						{
-							await elseResultStream.Next(item);
+							await elseSourceStream.Next(item);
 						}
 					}
 				}
@@ -59,12 +60,12 @@ namespace System.Linq
 				}
 				catch (Exception e)
 				{
-					await elseResultStream.Error(e);
+					await elseSourceStream.Error(e);
 				}
 				finally
 				{
 					await ifSourceStream.Complete();
-					await elseResultStream.Complete();
+					await elseSourceStream.Complete();
 				}
 			}
 		}

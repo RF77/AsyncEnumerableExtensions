@@ -87,7 +87,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		}
 
 		[Fact]
-		public async Task BufferWhereMaxSizeWillOccurComsumeAlle()
+		public async Task BufferWhereMaxSizeWillOccurConsumeAll()
 		{
 			CancellationTokenSource cts = new CancellationTokenSource();
 			var all = new List<string>();
@@ -106,7 +106,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 
 
 		[Fact]
-		public async Task BufferWhereMaxTimeWillOccurComsumeAlle()
+		public async Task BufferWhereMaxTimeWillOccurConsumeAll()
 		{
 			CancellationTokenSource cts = new CancellationTokenSource();
 			var all = new List<string>();
