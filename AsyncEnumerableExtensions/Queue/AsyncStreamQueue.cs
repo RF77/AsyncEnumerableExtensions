@@ -30,13 +30,13 @@ namespace AsyncEnumerableExtensions.Queue
 		{
 			var throttler = new SemaphoreSlim(maxConcurrentTasks);
 
-			var multicastStream = new MulticastAsyncEnumerable<TResult>();
+			var replayAsyncEnumerable = new ReplayAsyncEnumerable<TResult>();
 
 			HashSet<Task> runningStreams = new HashSet<Task>();
 
 			HandleInputStreams();
 
-			return multicastStream;
+			return replayAsyncEnumerable;
 
 			async void HandleInputStreams()
 			{
@@ -49,11 +49,11 @@ namespace AsyncEnumerableExtensions.Queue
 					}
 
 					await Task.WhenAll(runningStreams);
-					await multicastStream.Complete();
+					await replayAsyncEnumerable.Complete();
 				}
 				catch (Exception e)
 				{
-					await multicastStream.Error(e);
+					await replayAsyncEnumerable.Error(e);
 				}
 			}
 
@@ -63,12 +63,12 @@ namespace AsyncEnumerableExtensions.Queue
 				{
 					await foreach (var item in source.WithCancellation(cancellationToken))
 					{
-						await multicastStream.Next(item);
+						await replayAsyncEnumerable.Next(item);
 					}
 				}
 				catch (Exception e)
 				{
-					await multicastStream.Error(e);
+					await replayAsyncEnumerable.Error(e);
 				}
 			}
 		}
