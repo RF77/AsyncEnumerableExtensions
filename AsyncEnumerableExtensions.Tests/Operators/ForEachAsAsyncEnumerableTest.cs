@@ -17,7 +17,7 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 		[Fact]
 		public async Task TestForEachAsAsyncEnumerableWithAsyncEnumerable()
 		{
-			var stream = Range(0, 5).Delay(100).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 2);
+			var stream = Range(0, 10).Delay(100).ForEachAsAsyncEnumerable(i => GetMoreNumbersFromNumber(i), 3);
 
 			await WriteStreamToOutputAsync(stream);
 		}
@@ -71,10 +71,10 @@ namespace AsyncEnumerableExtensions.Tests.Operators
 			string current = "";
 			for (int i = 0; i < 4; i++)
 			{
+				await Task.Delay(50, cancellationToken);
 				current += number.ToString();
 				Write($"yield {current}");
 				yield return current;
-				await Task.Delay(50, cancellationToken);
 			}
 		}
 	}

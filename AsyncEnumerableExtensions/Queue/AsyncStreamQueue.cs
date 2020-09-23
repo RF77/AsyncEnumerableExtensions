@@ -29,14 +29,15 @@ namespace AsyncEnumerableExtensions.Queue
 		public IAsyncEnumerable<TResult> ExecuteParallelAsync(IAsyncEnumerable<AsyncStreamQueueItem<TResult, TSource>> inputItems, int maxConcurrentTasks, CancellationToken cancellationToken)
 		{
 			var throttler = new SemaphoreSlim(maxConcurrentTasks);
+			var nextLock = new SemaphoreSlim(1,1);
 
-			var replayAsyncEnumerable = new ReplayAsyncEnumerable<TResult>();
+			var multicastStream = new MulticastAsyncEnumerable<TResult>();
 
 			HashSet<Task> runningStreams = new HashSet<Task>();
 
 			HandleInputStreams();
 
-			return replayAsyncEnumerable;
+			return multicastStream;
 
 			async void HandleInputStreams()
 			{
@@ -45,15 +46,27 @@ namespace AsyncEnumerableExtensions.Queue
 					await foreach (AsyncStreamQueueItem<TResult, TSource> inputItem in inputItems.WithCancellation(cancellationToken))
 					{
 						var stream = ExecuteItem(throttler, inputItem, cancellationToken);
-						runningStreams.Add(ConsumeSubStream(stream));
+						lock (runningStreams)
+						{
+							runningStreams.Add(ConsumeSubStream(stream));
+						}
 					}
 
 					await Task.WhenAll(runningStreams);
-					await replayAsyncEnumerable.Complete();
+
+					await nextLock.WaitAsync(cancellationToken);
+					try
+					{
+						await multicastStream.Complete();
+					}
+					finally
+					{
+						nextLock.Release();
+					}
 				}
 				catch (Exception e)
 				{
-					await replayAsyncEnumerable.Error(e);
+					await multicastStream.Error(e);
 				}
 			}
 
@@ -63,12 +76,20 @@ namespace AsyncEnumerableExtensions.Queue
 				{
 					await foreach (var item in source.WithCancellation(cancellationToken))
 					{
-						await replayAsyncEnumerable.Next(item);
+						await nextLock.WaitAsync(cancellationToken);
+						try
+						{
+							await multicastStream.Next(item);
+						}
+						finally
+						{
+							nextLock.Release();
+						}
 					}
 				}
 				catch (Exception e)
 				{
-					await replayAsyncEnumerable.Error(e);
+					await multicastStream.Error(e);
 				}
 			}
 		}
