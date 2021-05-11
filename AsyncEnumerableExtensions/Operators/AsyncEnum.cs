@@ -219,5 +219,92 @@ namespace System.Linq
 			return sources.Merge();
 		}
 
+		/// <summary>
+		/// Push received items continuously to the specified list.
+		/// so far not optimized for performance! Consider to use a queue
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <param name="source">source async enumerable</param>
+		/// <param name="list">Items are added to this list</param>
+		/// <param name="maxSize">0 means unlimited (default) or specify max size for list</param>
+		/// <returns></returns>
+		public static IAsyncEnumerable<TSource> PushToList<TSource>(
+			this IAsyncEnumerable<TSource> source, IList<TSource> list, int maxSize = 0)
+		{
+			return source.Do(i =>
+			{
+				list.Add(i);
+				while (maxSize > 0 && list.Count > maxSize)
+				{
+					list.RemoveAt(0);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Push received items continuously to the specified list.
+		/// so far not optimized for performance! Consider to use a queue
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <param name="source">source async enumerable</param>
+		/// <param name="list">Items are added to this list</param>
+		/// <param name="maxSizeFunc">func returning the max items for  list</param>
+		/// <returns></returns>
+		public static IAsyncEnumerable<TSource> PushToList<TSource>(
+			this IAsyncEnumerable<TSource> source, IList<TSource> list, Func<int> maxSizeFunc)
+		{
+			return source.Do(i =>
+			{
+				list.Add(i);
+				while (list.Count > maxSizeFunc())
+				{
+					list.RemoveAt(0);
+				}
+			});
+		}
+
+
+		/// <summary>
+		/// Push received items continuously to the specified queue.
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="queue">Items are enqueued to this queue</param>
+		/// <param name="maxSize">0 means unlimited (default) or specify max size for queue</param>
+		/// <returns></returns>
+		public static IAsyncEnumerable<TSource> PushToQueue<TSource>(
+			this IAsyncEnumerable<TSource> source, Queue<TSource> queue, int maxSize = 0)
+		{
+			return source.Do(i =>
+			{
+				queue.Enqueue(i);
+				while (maxSize > 0 && queue.Count > maxSize)
+				{
+					queue.Dequeue();
+				}
+			});
+		}
+
+		/// <summary>
+		/// Push received items continuously to the specified queue.
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="queue">Items are enqueued to this queue</param>
+		/// <param name="maxSizeFunc">func returning the max items for queue</param>
+		/// <returns></returns>
+		public static IAsyncEnumerable<TSource> PushToQueue<TSource>(
+			this IAsyncEnumerable<TSource> source, Queue<TSource> queue, Func<int> maxSizeFunc)
+		{
+			return source.Do(i =>
+			{
+				queue.Enqueue(i);
+				while (queue.Count > maxSizeFunc())
+				{
+					queue.Dequeue();
+				}
+			});
+		}
+
 	}
 }
